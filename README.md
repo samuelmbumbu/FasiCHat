@@ -1,37 +1,46 @@
-# FasiChat Classroom — Backend PHP POO
+# FasiChat Classroom
 
-Projet de messagerie académique en PHP orienté objet, avec le frontend fourni conservé et relié à un backend PHP natif.
+Plateforme académique de communication développée en PHP orienté objet.
 
-## Installation locale
+## Fonctionnalités
 
-1. Copier le dossier dans `htdocs` ou `www`.
-2. Créer/importer la base avec `database/fasichat_demo.sql` dans phpMyAdmin.
-3. Vérifier les accès MySQL dans `backend/config.php`.
-4. Ouvrir `login.html` dans le navigateur.
+- Authentification sécurisée
+- Gestion des rôles
+  - Étudiant
+  - Enseignant
+  - Assistant
+  - Doyen
+  - Vice-Doyen
+  - Apparitaire
+- Messagerie académique
+- Gestion des convocations
+- Onglet Valve
+- Sessions PHP sécurisées
+- Base de données MySQL via PDO
 
-## Comptes de test
+## Technologies
 
-Mot de passe pour tous les comptes : `123456`
+- PHP 8
+- MySQL
+- PDO
+- HTML5
+- CSS3
+- JavaScript
 
-- Doyen : `doyen@faculte.edu`
-- Vice-Doyen : `vdoyen@faculte.edu`
-- Apparitaire : `apparitaire@faculte.edu`
-- Enseignant : `enseignant@faculte.edu`
-- Assistant : `assistant@faculte.edu`
-- Étudiant : `SI2024001`
+## Installation
+
+1. Cloner le projet
+2. Créer la base `fasichat_classroom`
+3. Importer `database/fasichat_demo.sql`
+4. Configurer `backend/config.php`
+5. Lancer avec MAMP/XAMPP
 
 ## Architecture
 
-- `backend/classes` : classes POO obligatoires.
-- `backend/actions` : scripts contrôleurs appelés par les formulaires.
-- `database/fasichat_demo.sql` : schéma relationnel + données de test.
-- `docs/modelisation.md` : justification de conception.
+- Programmation Orientée Objet
+- Héritage
+- Polymorphisme
+- Interfaces
+- Traits PHP
 
-## Points respectés
-
-- PHP natif, sans framework.
-- POO avec classe abstraite, héritage, interface, trait et polymorphisme.
-- PDO + requêtes préparées.
-- Sessions PHP sécurisées.
-- Contrôle des rôles pour Convocation et Valve.
-- Upload limité à 20 Mo avec compression image via GD si disponible.
+Projet réalisé dans le cadre du cours de Programmation Web PHP.
