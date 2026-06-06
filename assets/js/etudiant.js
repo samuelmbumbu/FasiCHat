@@ -1,4 +1,4 @@
-
+console.log("etudiant.js chargé");
 let currentUploadKind = 'document';
 let mediaRecorder = null;
 let audioChunks = [];
@@ -59,8 +59,25 @@ async function toggleAudio(){
   } catch(e){ alert('Impossible d’accéder au micro.'); }
 }
 window.addEventListener('DOMContentLoaded', () => {
-  const msgs = document.getElementById('messages'); if(msgs) msgs.scrollTop = msgs.scrollHeight;
-  const ta = document.getElementById('msgInput'); if(ta) ta.addEventListener('input', function(){ this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,120)+'px'; });
-  const labels = ['file','image','video','pdf']; document.querySelectorAll('.input-toolbar .toolbar-btn').forEach((b,i)=> b.addEventListener('click',()=>chooseFile(labels[i]||'file')));
-  const vb = document.querySelector('.voice-btn'); if(vb) vb.addEventListener('click', toggleAudio);
+    const msgs = document.getElementById('messages');
+    if (msgs) msgs.scrollTop = msgs.scrollHeight;
+
+    const ta = document.getElementById('msgInput');
+    if (ta) {
+        ta.addEventListener('input', function () {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+    }
+
+    const labels = ['file', 'image', 'video', 'pdf'];
+
+    document.querySelectorAll('.toolbar-btn').forEach((btn, index) => {
+        btn.addEventListener('click', function () {
+            chooseFile(labels[index] || 'file');
+        });
+    });
+
+    const vb = document.querySelector('.voice-btn');
+    if (vb) vb.addEventListener('click', toggleAudio);
 });

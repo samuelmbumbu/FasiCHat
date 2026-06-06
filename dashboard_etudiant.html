@@ -356,7 +356,73 @@
       </div>
     </div>
   </div>
-</div>
+<input type="file" id="uploadFix" style="display:none">
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const input = document.getElementById('uploadFix');
+  const messages = document.getElementById('messages');
+
+  document.querySelectorAll('.toolbar-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      input.click();
+    });
+  });
+
+  input.addEventListener('change', async function () {
+    if (!input.files.length) return;
+
+    const file = input.files[0];
+
+    const formData = new FormData();
+    formData.append('contenu', '');
+    formData.append('type', 'public');
+    formData.append('cours_id', '1');
+    formData.append('fichier', file);
+
+    try {
+      const response = await fetch('backend/actions/send_message.php', {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await response.json();
+
+      if (result.ok) {
+        const url = URL.createObjectURL(file);
+
+        const row = document.createElement('div');
+        row.className = 'msg-row mine';
+
+        row.innerHTML = `
+          <div class="msg-avatar">ME</div>
+          <div class="msg-group">
+            <a class="file-bubble" href="${url}" target="_blank">
+              <div class="file-icon">📎</div>
+              <div class="file-info">
+                <h5>${file.name}</h5>
+                <p>${(file.size / 1024 / 1024).toFixed(1)} Mo</p>
+              </div>
+              <span style="font-size:18px;margin-left:auto;">⬇</span>
+            </a>
+            <div class="msg-meta">À l’instant ✓</div>
+          </div>
+        `;
+
+        messages.appendChild(row);
+        messages.scrollTop = messages.scrollHeight;
+
+        alert('Fichier envoyé avec succès ✅');
+      } else {
+        alert('Erreur : ' + result.message);
+      }
+
+    } catch (e) {
+      alert('Erreur JavaScript : ' + e.message);
+    }
+  });
+});
+</script>
 
 <script src="assets/js/etudiant.js"></script>
 </body>
