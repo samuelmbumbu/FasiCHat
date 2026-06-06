@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__.'/Utilisateur.php';
 require_once __DIR__.'/TraitConvocation.php';
+require_once __DIR__.'/Utilisateur.php';
 require_once __DIR__.'/Convocation.php';
 class UtilisateurFactory {
     public static function creer(array $data): Utilisateur {
