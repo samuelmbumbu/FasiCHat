@@ -1,0 +1,315 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\geometry{margin=2.5cm}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!50!black,
+    urlcolor=blue!50!black
+}
+\setlist[itemize]{noitemsep, topsep=3pt}
+\setlist[enumerate]{noitemsep, topsep=3pt}
+\renewcommand{\arraystretch}{1.25}
+
+\title{\textbf{Resume du projet FasiChat Classroom}}
+\author{Projet de Programmation Web PHP}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+FasiChat Classroom est une plateforme academique de communication developpee en PHP oriente objet. Le projet propose une authentification par roles, des tableaux de bord adaptes aux profils universitaires, une messagerie academique, un systeme de convocations, un espace \og Valve \fg{} pour les annonces officielles et une gestion basique des fichiers. Le backend repose sur PHP 8, PDO et MySQL, tandis que le frontend est compose de pages HTML, CSS et JavaScript.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Presentation generale}
+
+Le projet FasiChat Classroom vise a fournir un environnement de communication interne pour une faculte. Il se positionne comme une application web educative permettant aux etudiants, enseignants, assistants et responsables administratifs d'echanger des messages, de consulter les annonces et de recevoir des convocations.
+
+L'application a ete concue dans le cadre d'un cours de Programmation Web PHP. Elle met en evidence les notions de programmation orientee objet, notamment l'heritage, le polymorphisme, les interfaces, les traits PHP et la separation entre la logique metier, les actions serveur et l'interface utilisateur.
+
+\section{Objectifs fonctionnels}
+
+Les objectifs principaux du projet sont les suivants :
+
+\begin{itemize}
+    \item authentifier les utilisateurs a partir d'un identifiant et d'un mot de passe ;
+    \item rediriger chaque utilisateur vers le tableau de bord correspondant a son role ;
+    \item organiser les profils autour des roles etudiants, enseignants, assistants, doyen, vice-doyen et apparitaire ;
+    \item permettre l'envoi de messages prives, publics et pedagogiques ;
+    \item permettre au doyen et au vice-doyen de convoquer les enseignants et assistants ;
+    \item permettre a l'apparitaire de publier, modifier et supprimer les annonces de la Valve ;
+    \item stocker les donnees principales dans une base MySQL relationnelle ;
+    \item fournir une interface visuelle distincte pour chaque espace utilisateur.
+\end{itemize}
+
+\section{Technologies utilisees}
+
+\begin{longtable}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Technologie} & \textbf{Role dans le projet} \\
+\hline
+PHP 8 & Implementation du backend, des classes metier et des actions serveur. \\
+\hline
+MySQL & Stockage des utilisateurs, cours, messages, convocations et annonces. \\
+\hline
+PDO & Acces securise a la base de donnees avec requetes preparees. \\
+\hline
+HTML5 & Structure des pages de connexion, tableaux de bord et Valve. \\
+\hline
+CSS3 & Mise en forme des interfaces selon les espaces utilisateur. \\
+\hline
+JavaScript & Interactions cote client : navigation d'onglets, modales, messages simules et ajustement des champs. \\
+\hline
+Sessions PHP & Conservation de l'utilisateur connecte et controle de l'acces aux actions protegees. \\
+\hline
+\end{longtable}
+
+\section{Organisation du projet}
+
+La structure du projet se repartit en plusieurs dossiers et fichiers :
+
+\begin{longtable}{|p{5cm}|p{9cm}|}
+\hline
+\textbf{Chemin} & \textbf{Description} \\
+\hline
+\texttt{README.md} & Documentation courte de presentation, technologies et installation. \\
+\hline
+\texttt{docs/modelisation.md} & Explication technique de la modelisation objet et des choix d'architecture. \\
+\hline
+\texttt{login.html} & Page de connexion avec choix du role. \\
+\hline
+\texttt{dashboard\_etudiant.html} & Interface etudiant avec messagerie, cours, membres et fichiers partages. \\
+\hline
+\texttt{dashboard\_enseignant.html} & Interface enseignant avec liste d'etudiants, mur pedagogique et messagerie. \\
+\hline
+\texttt{dashboard\_admin.html} & Interface administrative du doyen. \\
+\hline
+\texttt{dashboard\_vicedoyen.html} & Interface administrative du vice-doyen. \\
+\hline
+\texttt{dashboard\_apparitaire.html} & Interface de gestion reservee a l'apparitaire. \\
+\hline
+\texttt{valve.html} & Tableau d'affichage public des annonces institutionnelles. \\
+\hline
+\texttt{assets/} & Feuilles de style et scripts JavaScript propres a chaque page. \\
+\hline
+\texttt{backend/classes/} & Classes PHP du domaine : utilisateurs, authentification, messages, convocations, Valve, fichiers et base de donnees. \\
+\hline
+\texttt{backend/actions/} & Points d'entree PHP traitant les formulaires et actions utilisateur. \\
+\hline
+\texttt{database/fasichat\_demo.sql} & Script SQL de creation de la base et d'insertion de donnees de demonstration. \\
+\hline
+\end{longtable}
+
+\section{Architecture generale}
+
+L'application separe trois couches principales :
+
+\begin{enumerate}
+    \item \textbf{Interface utilisateur} : les fichiers HTML, CSS et JavaScript affichent les tableaux de bord et simulent certaines interactions cote client.
+    \item \textbf{Actions serveur} : les scripts dans \texttt{backend/actions/} recoivent les formulaires, verifient les sessions et appellent les classes metier.
+    \item \textbf{Classes metier} : les classes dans \texttt{backend/classes/} encapsulent les operations principales : connexion, utilisateurs, messagerie, convocations, Valve et upload.
+\end{enumerate}
+
+Cette architecture reste volontairement simple. Elle n'utilise pas de framework PHP, mais s'appuie sur des classes natives, des fichiers d'actions et une connexion PDO partagee.
+
+\section{Modelisation orientee objet}
+
+\subsection{Utilisateurs et roles}
+
+La classe abstraite \texttt{Utilisateur} contient les attributs communs : identifiant interne, nom, identifiant de connexion et role. Elle impose la methode abstraite \texttt{tableauDeBord()}, qui permet a chaque role de retourner la page HTML correspondant a son espace.
+
+\begin{itemize}
+    \item \texttt{Etudiant} redirige vers \texttt{dashboard\_etudiant.html}.
+    \item \texttt{Enseignant} redirige vers \texttt{dashboard\_enseignant.html}.
+    \item \texttt{Assistant} herite de \texttt{Enseignant} et utilise le meme tableau de bord.
+    \item \texttt{Administratif} sert de classe commune pour les profils administratifs.
+    \item \texttt{Doyen} et \texttt{ViceDoyen} peuvent envoyer des convocations.
+    \item \texttt{Apparitaire} dispose d'un espace specialise pour la gestion de la Valve.
+\end{itemize}
+
+La classe \texttt{UtilisateurFactory} centralise la creation des objets utilisateurs selon la valeur du role en base de donnees. Cette fabrique evite de disperser la logique de selection des classes dans plusieurs fichiers.
+
+\subsection{Convocations}
+
+Le projet utilise une interface \texttt{Convocable} et un trait \texttt{TraitConvocation}. Le doyen et le vice-doyen partagent ainsi la meme methode \texttt{convoquer()} sans duplication de code.
+
+La classe \texttt{Convocation} enregistre une convocation dans la table \texttt{convocations}, puis associe automatiquement les destinataires issus de la table \texttt{users}. Les roles destinataires sont les enseignants et les assistants. L'enregistrement utilise une transaction afin de grouper la creation de la convocation et de ses destinataires.
+
+\subsection{Messages}
+
+La classe abstraite \texttt{Message} definit le comportement commun d'envoi. Les classes filles indiquent uniquement le type du message :
+
+\begin{itemize}
+    \item \texttt{MessagePrive} pour un message adresse a un utilisateur precis ;
+    \item \texttt{MessagePublic} pour un message lie a un cours ;
+    \item \texttt{MurPedagogique} pour une publication pedagogique dans un cours.
+\end{itemize}
+
+Cette structure illustre le polymorphisme : l'action serveur manipule un objet \texttt{Message}, mais le type final est determine par la classe concrete.
+
+\subsection{Valve}
+
+La classe \texttt{Valve} centralise les operations sur les annonces :
+
+\begin{itemize}
+    \item publication d'une annonce ;
+    \item modification d'une annonce existante ;
+    \item suppression ;
+    \item consultation de la liste des annonces.
+\end{itemize}
+
+Avant toute operation d'ecriture, la classe verifie que le role de l'utilisateur est \texttt{apparitaire}. Cette verification rend la Valve consultable par tous, mais administrable uniquement par l'apparitaire.
+
+\section{Base de donnees}
+
+Le fichier \texttt{database/fasichat\_demo.sql} cree une base nommee \texttt{fasichat\_classroom}. Le schema contient les tables suivantes :
+
+\begin{longtable}{|p{4.5cm}|p{9.5cm}|}
+\hline
+\textbf{Table} & \textbf{Role} \\
+\hline
+\texttt{promotions} & Stocke les promotions academiques. \\
+\hline
+\texttt{cours} & Stocke les cours et leur rattachement optionnel a une promotion. \\
+\hline
+\texttt{users} & Stocke les utilisateurs, identifiants, mots de passe haches, roles et promotions. \\
+\hline
+\texttt{cours\_users} & Associe les utilisateurs aux cours. \\
+\hline
+\texttt{messages} & Stocke les messages prives, publics et pedagogiques. \\
+\hline
+\texttt{convocations} & Stocke les convocations creees par un responsable administratif. \\
+\hline
+\texttt{convocation\_destinataires} & Associe chaque convocation a ses destinataires et indique l'etat de lecture. \\
+\hline
+\texttt{annonces\_valve} & Stocke les annonces publiees sur la Valve. \\
+\hline
+\end{longtable}
+
+Les relations utilisent des cles etrangeres afin de conserver la coherence entre promotions, cours, utilisateurs, messages, convocations et annonces.
+
+\section{Parcours utilisateur}
+
+\subsection{Connexion}
+
+La page \texttt{login.html} envoie les identifiants vers \texttt{backend/actions/login.php}. L'action appelle la classe \texttt{Auth}, verifie le mot de passe avec \texttt{password\_verify()}, cree la session via \texttt{Session::connecter()}, instancie le bon objet utilisateur avec \texttt{UtilisateurFactory}, puis redirige vers le tableau de bord du role.
+
+\subsection{Etudiant}
+
+L'espace etudiant presente une interface de messagerie, des conversations, des informations de cours, des membres et des fichiers partages. Le script \texttt{assets/js/etudiant.js} gere les onglets, la selection d'une conversation et l'ajout visuel de messages dans l'interface.
+
+\subsection{Enseignant et assistant}
+
+L'espace enseignant permet de consulter une liste d'etudiants, d'utiliser un mur pedagogique et de participer a la messagerie. L'assistant reutilise le meme tableau de bord, ce qui traduit son rattachement fonctionnel au role enseignant.
+
+\subsection{Doyen et vice-doyen}
+
+Les espaces administratifs affichent des statistiques, des formulaires de convocation, des messages confidentiels et des liens vers la Valve. Le backend limite l'envoi effectif des convocations aux roles \texttt{doyen} et \texttt{vice\_doyen}.
+
+\subsection{Apparitaire}
+
+L'apparitaire dispose d'une interface orientee gestion des annonces. Les actions serveur de la Valve acceptent la creation, la modification et la suppression d'annonces uniquement si le role de session vaut \texttt{apparitaire}.
+
+\section{Actions serveur}
+
+\begin{longtable}{|p{5cm}|p{9cm}|}
+\hline
+\textbf{Action PHP} & \textbf{Responsabilite} \\
+\hline
+\texttt{backend/actions/login.php} & Authentifie l'utilisateur, controle le role choisi et redirige vers le tableau de bord. \\
+\hline
+\texttt{backend/actions/logout.php} & Detruit la session et renvoie vers la page de connexion. \\
+\hline
+\texttt{backend/actions/send\_message.php} & Cree un message prive, public ou pedagogique selon le type recu. \\
+\hline
+\texttt{backend/actions/convocation.php} & Verifie le role administratif, cree une convocation et redirige vers l'espace admin. \\
+\hline
+\texttt{backend/actions/valve.php} & Applique les operations de creation, modification ou suppression d'annonces. \\
+\hline
+\texttt{backend/actions/upload.php} & Traite l'envoi d'un fichier et retourne son emplacement de stockage. \\
+\hline
+\end{longtable}
+
+\section{Gestion des fichiers}
+
+La classe \texttt{GestionFichier} controle les uploads. Elle accepte notamment les images JPEG, PNG et WebP, les videos MP4, les PDF, les documents Word et certains fichiers audio. La taille maximale est definie par \texttt{MAX\_UPLOAD\_SIZE} dans \texttt{backend/config.php} et vaut 20 Mo.
+
+Pour les images, la classe tente une compression via l'extension GD. Si l'extension n'est pas disponible, le fichier est simplement deplace. Les noms de fichiers sont generes aleatoirement avec \texttt{random\_bytes()}, ce qui limite les collisions et evite de conserver le nom original fourni par l'utilisateur.
+
+\section{Securite}
+
+Le projet integre plusieurs mecanismes de securite :
+
+\begin{itemize}
+    \item utilisation de PDO avec des requetes preparees ;
+    \item verification des mots de passe avec \texttt{password\_verify()} ;
+    \item stockage attendu des mots de passe avec \texttt{password\_hash()} ;
+    \item regeneration de l'identifiant de session apres connexion ;
+    \item cookies de session avec l'option \texttt{httponly} et \texttt{samesite=Lax} ;
+    \item fonction d'echappement HTML \texttt{e()} basee sur \texttt{htmlspecialchars()} ;
+    \item controle du type MIME et de la taille des fichiers envoyes ;
+    \item controle du role pour les convocations et les annonces de la Valve.
+\end{itemize}
+
+Le fichier \texttt{backend/helpers.php} contient aussi une generation et une verification de jeton CSRF. Cependant, cette verification n'est pas appelee systematiquement dans les actions serveur actuelles.
+
+\section{Installation et execution}
+
+La mise en route du projet suit les etapes suivantes :
+
+\begin{enumerate}
+    \item placer le projet dans un serveur local compatible PHP, par exemple MAMP ou XAMPP ;
+    \item creer ou importer la base de donnees \texttt{fasichat\_classroom} ;
+    \item executer le script \texttt{database/fasichat\_demo.sql} ;
+    \item adapter les constantes de connexion dans \texttt{backend/config.php} ;
+    \item lancer le serveur local puis ouvrir \texttt{login.html}.
+\end{enumerate}
+
+La configuration actuelle utilise l'hote \texttt{127.0.0.1}, le port \texttt{8889}, l'utilisateur \texttt{root} et le mot de passe \texttt{root}, ce qui correspond typiquement a un environnement MAMP.
+
+\section{Points forts}
+
+\begin{itemize}
+    \item Le projet montre clairement les notions fondamentales de PHP oriente objet.
+    \item La fabrique d'utilisateurs simplifie la redirection par role.
+    \item La modelisation des convocations evite la duplication entre doyen et vice-doyen.
+    \item La base relationnelle couvre les entites essentielles d'une plateforme academique.
+    \item Les interfaces sont separees par role et donnent une vision concrete des usages.
+    \item Les requetes preparees, les sessions et le controle des uploads apportent une base de securite.
+\end{itemize}
+
+\section{Limites constatees}
+
+Certaines parties du projet sont encore proches d'une maquette fonctionnelle :
+
+\begin{itemize}
+    \item plusieurs contenus visibles dans les tableaux de bord sont statiques ;
+    \item certaines interactions JavaScript ajoutent des elements dans la page sans toujours appeler le backend ;
+    \item la fonction CSRF existe mais n'est pas appliquee partout ;
+    \item l'upload de fichier est separe de l'envoi de message dans l'action \texttt{send\_message.php} ;
+    \item la page \texttt{valve.html} affiche des annonces statiques alors que la classe \texttt{Valve} sait lister les annonces depuis la base.
+\end{itemize}
+
+Ces limites n'annulent pas la logique principale du projet, mais indiquent les points a completer pour transformer la maquette en application pleinement dynamique.
+
+\section{Conclusion}
+
+FasiChat Classroom est une application academique PHP qui combine une interface multi-role avec un backend oriente objet. Le projet couvre les fonctions essentielles d'une plateforme de communication universitaire : connexion, messagerie, annonces, convocations et gestion de fichiers. Il constitue une bonne base pedagogique pour illustrer l'heritage, le polymorphisme, les traits, les interfaces, PDO et les sessions PHP.
+
+Pour aller plus loin, il serait pertinent de rendre les tableaux de bord totalement dynamiques, de connecter toutes les actions JavaScript aux routes PHP, d'appliquer la protection CSRF a tous les formulaires, puis d'ajouter des tests ou des validations plus strictes sur les donnees entrantes.
+
+\end{document}
