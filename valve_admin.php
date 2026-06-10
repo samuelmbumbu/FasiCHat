@@ -1,0 +1,6 @@
+<?php
+require_once __DIR__.'/app/classes/Session.php'; require_once __DIR__.'/app/classes/Valve.php'; require_once __DIR__.'/app/helpers.php';
+$u=Session::requireRole(['apparitaire']); $msg='';
+if($_SERVER['REQUEST_METHOD']==='POST'){ (new Valve())->publier($u['id'], new AnnonceValve($_POST['titre']??'', $_POST['contenu']??'', $_POST['categorie']??'info', $_POST['expiration']?:null)); $msg='Annonce publiée.'; }
+?>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Gestion Valve</title><link rel="stylesheet" href="assets/css/style.css"></head><body><main class="content page solo"><h1>🛠️ Gestion Valve — Apparitaire uniquement</h1><a href="valve.php">Voir la Valve</a><?php if($msg): ?><div class="alert ok"><?=h($msg)?></div><?php endif; ?><form method="post" class="card form"><label>Titre</label><input name="titre" required><label>Catégorie</label><select name="categorie"><option value="info">Info</option><option value="urgence">Urgence</option><option value="convocation">Convocation</option><option value="academique">Académique</option></select><label>Contenu</label><textarea name="contenu" required></textarea><label>Expiration facultative</label><input type="date" name="expiration"><button>Publier</button></form></main></body></html>

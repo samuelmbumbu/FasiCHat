@@ -1,0 +1,1 @@
+<?php require_once __DIR__.'/app/classes/Session.php'; Session::deconnecter(); header('Location: login.php'); exit; ?>
